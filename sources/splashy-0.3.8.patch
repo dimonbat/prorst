@@ -1,0 +1,28 @@
+diff -Naur splashy-0.3.8/src/splashy_functions.c splashy-0.3.8-edit1/src/splashy_functions.c
+--- splashy-0.3.8/src/splashy_functions.c	2007-12-18 17:00:45.000000000 +0000
++++ splashy-0.3.8-edit1/src/splashy_functions.c	2008-03-14 17:10:54.000000000 +0000
+@@ -900,8 +900,9 @@
+ 		ERROR_PRINT("%s",strerror(errno));
+ 		pthread_exit(NULL);
+         }
+-                                                                                
+-        if (bind(sock, &sock_addr, sizeof(sock_addr)) < 0) 
++                                                        
++//	if (bind(sock, &sock_addr, sizeof(sock_addr)) < 0)                         
++        if (bind(sock, &sock_addr, 10) < 0) 
+         {
+ 		ERROR_PRINT("%s",strerror(errno));
+ 		pthread_exit(NULL);
+diff -Naur splashy-0.3.8/src/splashy_update.c splashy-0.3.8-edit1/src/splashy_update.c
+--- splashy-0.3.8/src/splashy_update.c	2007-12-18 17:00:45.000000000 +0000
++++ splashy-0.3.8-edit1/src/splashy_update.c	2008-03-14 17:11:31.000000000 +0000
+@@ -71,7 +71,8 @@
+                 return 1;
+         }
+ 
+-        if (connect(sock, &sock_addr, sizeof(sock_addr)) < 0) 
++//        if (connect(sock, &sock_addr, sizeof(sock_addr)) < 0) 
++	if (connect(sock, &sock_addr, 10) < 0) 
+         {
+                 ERROR_PRINT("%s",strerror(errno));
+                 return 1;

@@ -1,0 +1,19 @@
+history - script miniinstall (copyright Dimon.bat)
+==========
+
+0.002
+------
+remove SAMBA from sources and scripts,
+add reged (chntpw-080526) and screen-4.0.3, add /x/xterm and /s/screen from terminfo, remove creation of 'reg' directory. Wireless tools (iwconfig,iwpriv) copying into sbin directory now.
+--> 2010-06-02 - change config-k (config for kernel)
+--> 2010-06-07 - change parameters for ./configure in ntfsprogs (add --enable-ntfsmount)
+--> 2011-01-28 - change kernel config (usb keyboard support, Jmicron ATA support); adds removing some symlinks
+
+
+0.004
+-----
+linux kernel version 3.0.4 with madwifi 0.9.4-r4167-20110827 (madwifi build into kernel now) and firmwares for realtek LAN
+patch fix-install for madwifi
+busybox 1.18.5
+skript modified -add checking directories before cd command
+compile lfs kernel (2.6.21.5) - for fuse

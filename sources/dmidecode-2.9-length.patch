@@ -1,0 +1,14 @@
+diff -Naur dmidecode-2.9-orig/dmidecode.c dmidecode-2.9-modified/dmidecode.c
+--- dmidecode-2.9-orig/dmidecode.c	2007-02-26 12:01:44.000000000 +0000
++++ dmidecode-2.9-modified/dmidecode.c	2011-06-01 10:18:28.000000000 +0000
+@@ -3890,8 +3890,8 @@
+ 		 */
+ 		if(h.length<4)
+ 		{
+-			printf("Invalid entry length (%u). DMI table is "
+-			       "broken! Stop.\n\n", (unsigned int)h.length);
++			/* printf("Invalid entry length (%u). DMI table is "    //edit by Dimon.bat
++			       "broken! Stop.\n\n", (unsigned int)h.length); */
+ 			opt.flags |= FLAG_QUIET;
+ 			break;
+ 		}

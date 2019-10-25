@@ -1,0 +1,34 @@
+#!/bin/sh
+
+INSTALL_DIR="/ram-free"
+BOOT_DIR="/hda-free"
+CONFIG_BUZYBOX="./config-b"
+CONFIG_KERNEL="./config-k"
+
+# sources
+SOURCE_DIR="./sources"
+BUZYBOX="busybox-1.18.5"
+DMIDECODE="dmidecode-2.9"
+PCIUTILS="pciutils-2.2.6"
+FUSE="fuse-2.8.6"
+NTFSPROGS="ntfsprogs-2.0.0"
+LFTP="lftp-3.5.14"
+DIRECTFB="DirectFB-1.1.0"
+CHNTPW="chntpw-080526"
+GLIB2="glib-2.14.0"
+SPLASHY="splashy-0.3.8"
+KERNEL="linux-3.0.4"
+FIRMWARE="firmware-nonfree_0.32"
+VERSION=`echo $KERNEL|sed "s/linux-//"`
+LIBPNG="libpng-1.2.19"
+LIB="lib-6.7"
+SCRIPTS="scripts"
+DEV="dev"
+GRUB="grub-0.97"
+TERMINFO="terminfo"
+MADWIFI="madwifi-0.9.4-r4167-20110827"
+WIRELESS_TOOLS="wireless_tools.29"
+DROPBEAR="dropbear-0.52"
+SCREEN="screen-4.0.3"
+
+#END

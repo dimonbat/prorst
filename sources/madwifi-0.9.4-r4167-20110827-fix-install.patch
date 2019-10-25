@@ -1,0 +1,12 @@
+diff -Naur madwifi-0.9.4-r4139-20110504-orig/patches/install.sh madwifi-0.9.4-r4139-20110504-modified/patches/install.sh
+--- madwifi-0.9.4-r4139-20110504-orig/patches/install.sh	2007-01-12 06:01:25.000000000 +0000
++++ madwifi-0.9.4-r4139-20110504-modified/patches/install.sh	2011-05-30 11:39:59.000000000 +0000
+@@ -99,7 +99,7 @@
+ cp -f $kbuild/Makefile ${MADWIFI}
+ if test "$kbuild" = 2.6; then
+ cp -f $kbuild/Kconfig ${MADWIFI}
+-sed -i '/madwifi/d;/^endmenu/i\
++sed -i '/madwifi/d;/^endif/i\
+ source "drivers/net/wireless/madwifi/Kconfig"' ${WIRELESS}/Kconfig
+ sed -i '$a\
+ obj-$(CONFIG_ATHEROS) += madwifi/
