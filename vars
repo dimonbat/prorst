@@ -22,7 +22,8 @@ FIRMWARE="firmware-nonfree_0.32"
 VERSION=`echo $KERNEL|sed "s/linux-//"`
 LIBPNG="libpng-1.2.19"
 LIB="lib-6.7"
-SCRIPTS="scripts"
+SCRIPTSREPO="scripts"
+INSTALLREPO="install"
 DEV="dev"
 GRUB="grub-0.97"
 TERMINFO="terminfo"
@@ -30,5 +31,6 @@ MADWIFI="madwifi-0.9.4-r4167-20110827"
 WIRELESS_TOOLS="wireless_tools.29"
 DROPBEAR="dropbear-0.52"
 SCREEN="screen-4.0.3"
+PARTED="parted-3.3"
 
 #END

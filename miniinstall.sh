@@ -296,19 +296,34 @@ chmod -u+xrw $INSTALL_DIR/bin/reged
 rm -r $CHNTPW
 
 ### GRUB
-tar -xjf $GRUB.tar.bz2
-cd $GRUB
+tar -xjf ${GRUB}.tar.bz2
+cd ${GRUB}
 if [ $? == 0 ]
 then
-patch -Np1 -i ../$GRUB-bc_partition.patch
-./configure --prefix=$INSTALL_DIR --mandir=/tmp/man --infodir=/tmp/info
+patch -Np1 -i ../${GRUB}-bc_partition.patch
+./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --infodir=/tmp/info
 make
 make install
 cd ..
-rm -r $GRUB
+rm -r ${GRUB}
 rm -r /tmp/man
 rm -r /tmp/info
 else echo "cannot cd to ${GRUB}"
+fi
+
+### PARTED
+tar -xjf ${PARTED}.tar.bz2
+cd ${PARTED}
+if [ $? == 0 ]
+then
+    ./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --docdir=/tmp/man --includedir=/tmp/include --disable-device-mapper
+    make
+    make install
+    cd ..
+    rm -r ${PARTED}
+    rm -r /tmp/man
+    rm -r /tmp/include
+else echo "cannot cd to ${PARTED}"
 fi
 
 ### TERMINFO
@@ -331,11 +346,15 @@ cp -r ../../${SCRIPTSREPO}/etc/* ${INSTALL_DIR}/etc/
 cp -r ../../${SCRIPTSREPO}/opt/* ${INSTALL_DIR}/opt/
 cp -r ../../${SCRIPTSREPO}/udhcpc ${INSTALL_DIR}/usr/share
 cp ../../${SCRIPTSREPO}/grub/* ${INSTALL_DIR}/sbin/
+mkdir ${INSTALL_DIR}/install
+cp -r ../../${INSTALLREPO}/install/* ${INSTALL_DIR}/install/
+cp -rf ../../${INSTALLREPO}/opt/* ${INSTALL_DIR}/opt/
+
 
 ### DEVS
-tar -xjf $DEV.tar.bz2
-cp -r ./$DEV/* $INSTALL_DIR/dev/
-rm -r $DEV
+tar -xjf ${DEV}.tar.bz2
+cp -r ./${DEV}/* ${INSTALL_DIR}/dev/
+rm -r ${DEV}
 
 ### LIBS
 tar -xjf $LIB.tar.bz2
@@ -373,7 +392,7 @@ rm $INSTALL_DIR/chr.sh
 
 #INITRAMFS
 cd ${INSTALL_DIR}
-find .|cpio -o -H newc|gzip -9 > ${BOOT_DIR}/init.cpio.gz
+find .|cpio -o -H newc|gzip -9 > ${BOOT_DIR}/inst-usb.cpio.gz
 
 #GEN md5sum
 cd ${BOOT_DIR}
@@ -384,6 +403,8 @@ mv init.md5sum.1 init.md5sum
 md5sum kernel > kernel.md5sum
 sed 's/kernel/\/mnt\/lin\/boot\/kernel1/' kernel.md5sum > kernel.md5sum.1
 mv kernel.md5sum.1 kernel.md5sum
+
+
 
 ##************#*#-*-*-*-*-*-*-*-*-*-*-*
 #		   END
