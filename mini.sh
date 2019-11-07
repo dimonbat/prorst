@@ -102,15 +102,15 @@ else echo "cannot cd to ${KERNEL}"
 fi
 
 ### BUZYBOX
-tar -xjf $BUZYBOX.tar.bz2
-cp ../config-b $BUZYBOX/.config
-cd $BUZYBOX
+tar -xjf ${BUZYBOX}.tar.bz2
+cp ../config-b ${BUZYBOX}/.config
+cd ${BUZYBOX}
 if [ $? == 0 ]
 then
 make && make install
 cp -r ./_install/* $INSTALL_DIR
 cd ..
-rm -r $BUZYBOX
+rm -r ${BUZYBOX}
 else echo "cannot cd to ${BUSYBOX}"
 fi
 

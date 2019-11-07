@@ -32,5 +32,6 @@ WIRELESS_TOOLS="wireless_tools.29"
 DROPBEAR="dropbear-0.52"
 SCREEN="screen-4.0.3"
 PARTED="parted-3.3"
+#E2FSPROGS="e2fsprogs-1.41.12"
 
 #END

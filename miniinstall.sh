@@ -326,6 +326,18 @@ then
 else echo "cannot cd to ${PARTED}"
 fi
 
+### E2fsprogs
+#tar -xzf ${E2FSPROGS}.tar.gz
+#cd ${E2FSPROGS}
+#if [ $? == 0 ]
+#then
+#    ./configure --prefix=${INSTALL_DIR} --with-root-prefix=${INSTALL_DIR}
+#    make
+#    make install
+#    cd ..
+#else echo "cannot cd to ${E2FSPROGS}"
+#fi
+
 ### TERMINFO
 mkdir -p ${INSTALL_DIR}/usr/share/terminfo
 tar -xjf ${TERMINFO}.tar.bz2 
