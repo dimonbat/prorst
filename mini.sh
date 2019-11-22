@@ -6,25 +6,26 @@ PATH=/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 setterm -blank 0
 
 
-rm -r $INSTALL_DIR
-mkdir -p $INSTALL_DIR
+rm -r ${INSTALL_DIR}
+mkdir -p ${INSTALL_DIR}
 
 #CREATE CATALOGS
-mkdir $INSTALL_DIR/sys
-mkdir $INSTALL_DIR/dev
-mkdir $INSTALL_DIR/dev/pts
-mkdir $INSTALL_DIR/dev/shm
-mkdir $INSTALL_DIR/mnt
-mkdir $INSTALL_DIR/mnt/hd
-mkdir $INSTALL_DIR/mnt/cdrom
-mkdir $INSTALL_DIR/mnt/lin
-mkdir $INSTALL_DIR/etc
-mkdir $INSTALL_DIR/sbin
-mkdir $INSTALL_DIR/bin
-mkdir $INSTALL_DIR/proc
-mkdir $INSTALL_DIR/tmp
-mkdir $INSTALL_DIR/opt
-mkdir $INSTALL_DIR/lib
+mkdir ${INSTALL_DIR}/sys
+mkdir ${INSTALL_DIR}/dev
+mkdir ${INSTALL_DIR}/dev/pts
+mkdir ${INSTALL_DIR}/dev/shm
+mkdir ${INSTALL_DIR}/mnt
+mkdir ${INSTALL_DIR}/mnt/hd
+mkdir ${INSTALL_DIR}/mnt/cdrom
+mkdir ${INSTALL_DIR}/mnt/lin
+mkdir ${INSTALL_DIR}/mnt/cifs
+mkdir ${INSTALL_DIR}/etc
+mkdir ${INSTALL_DIR}/sbin
+mkdir ${INSTALL_DIR}/bin
+mkdir ${INSTALL_DIR}/proc
+mkdir ${INSTALL_DIR}/tmp
+mkdir ${INSTALL_DIR}/opt
+mkdir ${INSTALL_DIR}/lib
 mkdir -p $INSTALL_DIR/var/log ##it's need for dropbear
 mkdir -p $INSTALL_DIR/lib/modules
 mkdir -p $BOOT_DIR
@@ -221,15 +222,15 @@ fi
 
 
 ### DIRECT FB
-tar -xjf $DIRECTFB.tar.bz2
-cd ./$DIRECTFB
+tar -xjf ${DIRECTFB}.tar.bz2
+cd ./${DIRECTFB}
 if [ $? == 0 ]
 then
 ./configure  --prefix=/usr/local --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --disable-x11 --enable-video4linux --enable-static
 make
-make exec_prefix=$INSTALL_DIR/usr/local install
+make exec_prefix=${INSTALL_DIR}/usr/local install
 cd ..
-rm -r $DIRECTFB
+rm -r ${DIRECTFB}
 rm -r /tmp/man
 rm -r /tmp/doc
 rm -r /tmp/include
@@ -258,34 +259,35 @@ else echo "cannot cd to ${SPLASHY}"
 fi
 
 ###DROPBEAR
-tar -xjf $DROPBEAR.tar.bz2
-cd $DROPBEAR
+tar -xjf ${DROPBEAR}.tar.bz2
+cd ${DROPBEAR}
 if [ $? == 0 ]
 then
-./configure --prefix=/tmp/dropbear
-make
-make install
-cp /tmp/dropbear/sbin/dropbear $INSTALL_DIR/sbin/dropbear
-cd ..
-rm -r $DROPBEAR
+    ./configure --prefix=/tmp/dropbear
+    make
+    make install
+    cp /tmp/dropbear/sbin/dropbear ${INSTALL_DIR}/sbin/dropbear
+    cd ..
+    rm -r ${DROPBEAR}
 else echo "cannot cd to ${DROPBEAR}"
 fi
 
 ###SCREEN
-tar -xjf $SCREEN.tar.bz2
-cd $SCREEN
+tar -xjf ${SCREEN}.tar.bz2
+cd ${SCREEN}
 if [ $? == 0 ]
 then
-mkdir -p /tmp/screen
-./configure --prefix=/tmp/screen
-make
-make install
-cp /tmp/screen/bin/screen-4.0.3 $INSTALL_DIR/bin/screen
-rm -r /tmp/screen
-chmod -u+xrw $INSTALL_DIR/bin/screen
-cd ..
-rm -r $SCREEN
-else echo "cannot cd to ${SCREEN}"
+    mkdir -p /tmp/screen
+    ./configure --prefix=/tmp/screen
+    make
+    make install
+    cp /tmp/screen/bin/screen-4.0.3 ${INSTALL_DIR}/bin/screen
+    rm -r /tmp/screen
+    chmod -u+xrw ${INSTALL_DIR}/bin/screen
+    cd ..
+    rm -r ${SCREEN}
+else
+    echo "cannot cd to ${SCREEN}"
 fi
 
 
@@ -296,19 +298,69 @@ chmod -u+xrw $INSTALL_DIR/bin/reged
 rm -r $CHNTPW
 
 ### GRUB
-tar -xjf $GRUB.tar.bz2
-cd $GRUB
+tar -xjf ${GRUB}.tar.bz2
+cd ${GRUB}
 if [ $? == 0 ]
 then
-patch -Np1 -i ../$GRUB-bc_partition.patch
-./configure --prefix=$INSTALL_DIR --mandir=/tmp/man --infodir=/tmp/info
-make
-make install
-cd ..
-rm -r $GRUB
-rm -r /tmp/man
-rm -r /tmp/info
-else echo "cannot cd to ${GRUB}"
+    patch -Np1 -i ../${GRUB}-bc_partition.patch
+    ./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --infodir=/tmp/info
+    make
+    make install
+    cd ..
+    rm -r ${GRUB}
+    rm -r /tmp/man
+    rm -r /tmp/info
+else 
+    echo "cannot cd to ${GRUB}"
+fi
+
+
+### NTFS-3G
+tar -xzf ${NTFS3G}.tgz
+cd ${NTFS3G}
+if [ $? == 0 ]
+then
+    ./configure --prefix=${INSTALL_DIR}/usr --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include
+    make
+    make install
+    cd ..
+    rm -r ${NTFS3G}
+    rm -r /tmp/man
+    rm -r /tmp/info
+    rm -r /tmp/include
+else 
+    echo "cannot cd to ${NTFS3G}"
+fi
+
+
+### LIBUUID
+tar -xzf ${LIBUUID}.tar.gz
+cd ${LIBUUID}
+if [ $? == 0 ]
+then
+    ./configure --prefix=/ --includedir=/tmp/include
+    make
+    make install
+    cd ..
+    rm -r ${LIBUUID}
+    rm -r /tmp/include
+else 
+    echo "cannot cd to ${LIBUUID}"
+fi
+
+
+### PARTCLONE
+tar -xzf ${PARTCLONE}.tar.gz
+cd ${PARTCLONE}
+if [ $? == 0 ]
+then
+    ./configure --enable-ntfs --enable-static --enable-ncursesw --prefix=${INSTALL_DIR}
+    make
+    make install
+    cd ..
+    rm -r ${PARTCLONE}
+else 
+    echo "cannot cd to ${PARTCLONE}"
 fi
 
 ### TERMINFO
@@ -333,9 +385,9 @@ cp -r ../../${SCRIPTSREPO}/udhcpc ${INSTALL_DIR}/usr/share
 cp ../../${SCRIPTSREPO}/grub/* ${INSTALL_DIR}/sbin/
 
 ### DEVS
-tar -xjf $DEV.tar.bz2
-cp -r ./$DEV/* $INSTALL_DIR/dev/
-rm -r $DEV
+tar -xjf ${DEV}.tar.bz2
+cp -r ./${DEV}/* ${INSTALL_DIR}/dev/
+rm -r ${DEV}
 
 ### LIBS
 tar -xjf $LIB.tar.bz2

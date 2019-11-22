@@ -6,25 +6,26 @@ PATH=/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 setterm -blank 0
 
 
-rm -r $INSTALL_DIR
-mkdir -p $INSTALL_DIR
+rm -r ${INSTALL_DIR}
+mkdir -p ${INSTALL_DIR}
 
 #CREATE CATALOGS
-mkdir $INSTALL_DIR/sys
-mkdir $INSTALL_DIR/dev
-mkdir $INSTALL_DIR/dev/pts
-mkdir $INSTALL_DIR/dev/shm
-mkdir $INSTALL_DIR/mnt
-mkdir $INSTALL_DIR/mnt/hd
-mkdir $INSTALL_DIR/mnt/cdrom
-mkdir $INSTALL_DIR/mnt/lin
-mkdir $INSTALL_DIR/etc
-mkdir $INSTALL_DIR/sbin
-mkdir $INSTALL_DIR/bin
-mkdir $INSTALL_DIR/proc
-mkdir $INSTALL_DIR/tmp
-mkdir $INSTALL_DIR/opt
-mkdir $INSTALL_DIR/lib
+mkdir ${INSTALL_DIR}/sys
+mkdir ${INSTALL_DIR}/dev
+mkdir ${INSTALL_DIR}/dev/pts
+mkdir ${INSTALL_DIR}/dev/shm
+mkdir ${INSTALL_DIR}/mnt
+mkdir ${INSTALL_DIR}/mnt/hd
+mkdir ${INSTALL_DIR}/mnt/cdrom
+mkdir ${INSTALL_DIR}/mnt/lin
+mkdir ${INSTALL_DIR}/mnt/cifs
+mkdir ${INSTALL_DIR}/etc
+mkdir ${INSTALL_DIR}/sbin
+mkdir ${INSTALL_DIR}/bin
+mkdir ${INSTALL_DIR}/proc
+mkdir ${INSTALL_DIR}/tmp
+mkdir ${INSTALL_DIR}/opt
+mkdir ${INSTALL_DIR}/lib
 mkdir -p $INSTALL_DIR/var/log ##it's need for dropbear
 mkdir -p $INSTALL_DIR/lib/modules
 mkdir -p $BOOT_DIR
@@ -290,10 +291,10 @@ fi
 
 
 ### REGED
-tar -xjf $CHNTPW.tar.bz2
-cp ./$CHNTPW/reged.static $INSTALL_DIR/bin/reged
-chmod -u+xrw $INSTALL_DIR/bin/reged
-rm -r $CHNTPW
+tar -xjf ${CHNTPW}.tar.bz2
+cp ./${CHNTPW}/reged.static ${INSTALL_DIR}/bin/reged
+chmod -u+xrw ${INSTALL_DIR}/bin/reged
+rm -r ${CHNTPW}
 
 ### GRUB
 tar -xjf ${GRUB}.tar.bz2
@@ -312,19 +313,24 @@ else echo "cannot cd to ${GRUB}"
 fi
 
 ### PARTED
-tar -xjf ${PARTED}.tar.bz2
-cd ${PARTED}
-if [ $? == 0 ]
-then
-    ./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --docdir=/tmp/man --includedir=/tmp/include --disable-device-mapper
-    make
-    make install
-    cd ..
-    rm -r ${PARTED}
-    rm -r /tmp/man
-    rm -r /tmp/include
-else echo "cannot cd to ${PARTED}"
-fi
+#tar -xjf ${PARTED}.tar.bz2
+#cd ${PARTED}
+#if [ $? == 0 ]
+#then
+#    ./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --docdir=/tmp/man --includedir=/tmp/include --disable-device-mapper
+#    make
+#    make install
+#    cd ..
+#    rm -r ${PARTED}
+#    rm -r /tmp/man
+#    rm -r /tmp/include
+#else echo "cannot cd to ${PARTED}"
+#fi
+
+### Temporary fix for parted
+tar -xjf ${PARTED_BIN}.tar.bz2
+cp -r ${PARTED_BIN}/* ${INSTALL_DIR}
+rm -r ${PARTED_BIN}
 
 ### E2fsprogs
 #tar -xzf ${E2FSPROGS}.tar.gz
