@@ -39,9 +39,9 @@ tar -xjf ${KERNEL}.tar.bz2
 cd ${KERNEL}
 if [ $? == 0 ]
 then
-make allnoconfig    #its need
-make                #because making file /include/utsrelease.h 
-cd ..
+    make allnoconfig    #its need
+    make                #because making file /include/utsrelease.h 
+    cd ..
 else echo "cannot cd to ${KERNEL}"
 fi
 cp ../config-k ./${KERNEL}/.config          #copy config
@@ -58,12 +58,12 @@ tar -xzf $MADWIFI.tar.gz
 cd $MADWIFI
 if [ $? == 0 ]
 then
-patch -Np1 -i ../${MADWIFI}-fix-install.patch
-# patch kernel
-cd patches
-sh ./install.sh $KERNELPATH              #patching kernel
-cd ../..
-rm -r $MADWIFI
+    patch -Np1 -i ../${MADWIFI}-fix-install.patch
+    # patch kernel
+    cd patches
+    sh ./install.sh $KERNELPATH              #patching kernel
+    cd ../..
+    rm -r $MADWIFI
 else echo "cannot cd to ${MADWIFI}"
 fi
 # compile tools
@@ -73,32 +73,33 @@ tar -xjf $WIRELESS_TOOLS.tar.bz2
 cd $WIRELESS_TOOLS
 if [ $? == 0 ]
 then
-mkdir -p /tmp/wireless_tools
-make
-make PREFIX=/tmp/wireless_tools install
-# copy tools
-cp /tmp/wireless_tools/sbin/iwpriv /$INSTALL_DIR/sbin/
-cp /tmp/wireless_tools/sbin/iwconfig /$INSTALL_DIR/sbin/
-cp /tmp/wireless_tools/lib/libiw.so.29 /$INSTALL_DIR/lib
-ln -s libiw.so.29 /$INSTALL_DIR/lib/libiw.so
-cd ..
-rm -r $WIRELESS_TOOLS
-rm -r /tmp/wireless_tools
+    mkdir -p /tmp/wireless_tools
+    make
+    make PREFIX=/tmp/wireless_tools install
+    # copy tools
+    cp /tmp/wireless_tools/sbin/iwpriv /$INSTALL_DIR/sbin/
+    cp /tmp/wireless_tools/sbin/iwconfig /$INSTALL_DIR/sbin/
+    cp /tmp/wireless_tools/lib/libiw.so.29 /$INSTALL_DIR/lib
+    ln -s libiw.so.29 /$INSTALL_DIR/lib/libiw.so
+    cd ..
+    rm -r $WIRELESS_TOOLS
+    rm -r /tmp/wireless_tools
 else echo "cannot cd to ${WIRELESS_TOOLS}"
 fi
 
 ### kernel compile
-cd $KERNEL
+cd ${KERNEL}
 if [ $? == 0 ]
 then
-make
-cp ./arch/i386/boot/bzImage $BOOT_DIR/kernel
-make modules_install
-cp -r /lib/modules/${VERSION} /$INSTALL_DIR/lib/modules/$VERSION
-#remove some symlinks
-rm /$INSTALL_DIR/lib/modules/$VERSION/build
-rm /$INSTALL_DIR/lib/modules/$VERSION/source
-cd ..
+    make
+    cp ./arch/i386/boot/bzImage ${BOOT_DIR}/kernel
+    make modules_install
+    cp -r /lib/modules/${VERSION} /$INSTALL_DIR/lib/modules/$VERSION
+    #remove some symlinks
+    rm /$INSTALL_DIR/lib/modules/$VERSION/build
+    rm /$INSTALL_DIR/lib/modules/$VERSION/source
+    cd ..
+    rm -r ${KERNEL}
 else echo "cannot cd to ${KERNEL}"
 fi
 
@@ -108,21 +109,21 @@ cp ../config-b ${BUZYBOX}/.config
 cd ${BUZYBOX}
 if [ $? == 0 ]
 then
-make && make install
-cp -r ./_install/* $INSTALL_DIR
-cd ..
-rm -r ${BUZYBOX}
+    make && make install
+    cp -r ./_install/* ${INSTALL_DIR}
+    cd ..
+    rm -r ${BUZYBOX}
 else echo "cannot cd to ${BUSYBOX}"
 fi
 
 ### PCIUTILS
-tar -xjf $PCIUTILS.tar.bz2
-cd $PCIUTILS
+tar -xjf ${PCIUTILS}.tar.bz2
+cd ${PCIUTILS}
 if [ $? == 0 ]
 then
-make PREFIX=$INSTALL_DIR MANDIR=/tmp/man install
-cd ..
-rm -r $PCIUTILS
+    make PREFIX=${INSTALL_DIR} MANDIR=/tmp/man install
+    cd ..
+    rm -r ${PCIUTILS}
 else echo "cannot cd to ${PCIUTILS}"
 fi
 
@@ -131,30 +132,30 @@ tar -xjf ${DMIDECODE}.tar.bz2
 cd ${DMIDECODE}
 if [ $? == 0 ]
 then
-# patch Dmidecode
-patch -Np1 -i ../${DMIDECODE}-length.patch
-patch -Np1 -i ../${DMIDECODE}-makefile-fix.patch
-#make
-make prefix=$INSTALL_DIR mandir=/tmp/man man8dir=/tmp/man8 install
-cd ..
-rm -r $DMIDECODE
-rm -r /tmp/man 
-rm -r /tmp/man8
+    # patch Dmidecode
+    patch -Np1 -i ../${DMIDECODE}-length.patch
+    patch -Np1 -i ../${DMIDECODE}-makefile-fix.patch
+    #make
+    make prefix=$INSTALL_DIR mandir=/tmp/man man8dir=/tmp/man8 install
+    cd ..
+    rm -r $DMIDECODE
+    rm -r /tmp/man 
+    rm -r /tmp/man8
 else echo "cannot cd to ${DMIDECODE}"
 fi
 
 ### FUSE
-tar -xzf $FUSE.tar.gz
-cd $FUSE
+tar -xzf ${FUSE}.tar.gz
+cd ${FUSE}
 if [ $? == 0 ]
 then
-./configure --prefix=$INSTALL_DIR --mandir=/tmp/man --docdir=/tmp/doc --infodir=/tmp/info
-make && make install
-cd ..
-rm -r $FUSE
-rm -r /tmp/man
-rm -r /tmp/doc
-rm -r /tmp/info
+    ./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --docdir=/tmp/doc --infodir=/tmp/info
+    make && make install
+    cd ..
+    rm -r ${FUSE}
+    rm -r /tmp/man
+    rm -r /tmp/doc
+    rm -r /tmp/info
 else echo "cannot cd to ${FUSE}"
 fi
 
@@ -191,7 +192,7 @@ fi
 
 ### LIBPNG
 tar -xjf $LIBPNG.tar.bz2
-cd $LIBPNG
+cd ${LIBPNG}
 if [ $? == 0 ]
 then
 ./configure --prefix=$INSTALL_DIR/usr/local --infodir=/tmp/info --includedir=/tmp/include --mandir=/tmp/man --docdir=/tmp/doc --enable-static
@@ -210,7 +211,7 @@ tar -xjf $GLIB2.tar.bz2
 cd $GLIB2
 if [ $? == 0 ]
 then
-./configure --prefix=$INSTALL_DIR --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-gtk-doc=no --enable-static --localedir=/tmp
+./configure --prefix=$INSTALL_DIR --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-gtk-doc=no --localedir=/tmp
 make && make install
 cd ..
 rm -r $GLIB2
@@ -316,52 +317,52 @@ fi
 
 
 ### NTFS-3G
-tar -xzf ${NTFS3G}.tgz
-cd ${NTFS3G}
-if [ $? == 0 ]
-then
-    ./configure --prefix=${INSTALL_DIR}/usr --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include
-    make
-    make install
-    cd ..
-    rm -r ${NTFS3G}
-    rm -r /tmp/man
-    rm -r /tmp/info
-    rm -r /tmp/include
-else 
-    echo "cannot cd to ${NTFS3G}"
-fi
+#tar -xzf ${NTFS3G}.tgz
+#cd ${NTFS3G}
+#if [ $? == 0 ]
+#then
+#    ./configure --prefix=${INSTALL_DIR}/usr --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include
+#    make
+#    make install
+#    cd ..
+#    rm -r ${NTFS3G}
+#    rm -r /tmp/man
+#    rm -r /tmp/info
+#    rm -r /tmp/include
+#else 
+#    echo "cannot cd to ${NTFS3G}"
+#fi
 
 
 ### LIBUUID
-tar -xzf ${LIBUUID}.tar.gz
-cd ${LIBUUID}
-if [ $? == 0 ]
-then
-    ./configure --prefix=/ --includedir=/tmp/include
-    make
-    make install
-    cd ..
-    rm -r ${LIBUUID}
-    rm -r /tmp/include
-else 
-    echo "cannot cd to ${LIBUUID}"
-fi
+#tar -xzf ${LIBUUID}.tar.gz
+#cd ${LIBUUID}
+#if [ $? == 0 ]
+#then
+#    ./configure --prefix=/ --includedir=/tmp/include
+#    make
+#    make install
+#    cd ..
+#    rm -r ${LIBUUID}
+#    rm -r /tmp/include
+#else 
+#    echo "cannot cd to ${LIBUUID}"
+#fi
 
 
 ### PARTCLONE
-tar -xzf ${PARTCLONE}.tar.gz
-cd ${PARTCLONE}
-if [ $? == 0 ]
-then
-    ./configure --enable-ntfs --enable-static --enable-ncursesw --prefix=${INSTALL_DIR}
-    make
-    make install
-    cd ..
-    rm -r ${PARTCLONE}
-else 
-    echo "cannot cd to ${PARTCLONE}"
-fi
+#tar -xzf ${PARTCLONE}.tar.gz
+#cd ${PARTCLONE}
+#if [ $? == 0 ]
+#then
+#    ./configure --enable-ntfs --enable-static --enable-ncursesw --prefix=${INSTALL_DIR}
+#    make
+#    make install
+#    cd ..
+#    rm -r ${PARTCLONE}
+#else
+#    echo "cannot cd to ${PARTCLONE}"
+#fi
 
 ### TERMINFO
 mkdir -p ${INSTALL_DIR}/usr/share/terminfo
@@ -390,11 +391,11 @@ cp -r ./${DEV}/* ${INSTALL_DIR}/dev/
 rm -r ${DEV}
 
 ### LIBS
-tar -xjf $LIB.tar.bz2
-cp -r ./$LIB/* $INSTALL_DIR/lib
-cp /usr/lib/libgcc_s.so $INSTALL_DIR/usr/local/lib/libgcc_s.so
-cp /usr/lib/libgcc_s.so.1 $INSTALL_DIR/usr/local/lib/libgcc_s.so.1
-rm -r $LIB
+tar -xjf ${LIB}.tar.bz2
+cp -r ./${LIB}/* ${INSTALL_DIR}/lib
+cp /usr/lib/libgcc_s.so ${INSTALL_DIR}/usr/local/lib/libgcc_s.so
+cp /usr/lib/libgcc_s.so.1 ${INSTALL_DIR}/usr/local/lib/libgcc_s.so.1
+rm -r ${LIB}
 
 
 #EXIT FROM SOURCES
