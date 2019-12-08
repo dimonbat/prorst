@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.18.5
-# Sun Dec  8 14:57:23 2019
+# Sun Dec  8 17:47:40 2019
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -174,7 +174,7 @@ CONFIG_FEATURE_DATE_COMPAT=y
 # CONFIG_TR is not set
 # CONFIG_FEATURE_TR_CLASSES is not set
 # CONFIG_FEATURE_TR_EQUIV is not set
-# CONFIG_BASE64 is not set
+CONFIG_BASE64=y
 # CONFIG_CAL is not set
 # CONFIG_CATV is not set
 CONFIG_CHGRP=y

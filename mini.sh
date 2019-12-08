@@ -317,52 +317,52 @@ fi
 
 
 ### NTFS-3G
-#tar -xzf ${NTFS3G}.tgz
-#cd ${NTFS3G}
-#if [ $? == 0 ]
-#then
-#    ./configure --prefix=${INSTALL_DIR}/usr --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include
-#    make
-#    make install
-#    cd ..
-#    rm -r ${NTFS3G}
-#    rm -r /tmp/man
-#    rm -r /tmp/info
-#    rm -r /tmp/include
-#else 
-#    echo "cannot cd to ${NTFS3G}"
-#fi
+tar -xzf ${NTFS3G}.tgz
+cd ${NTFS3G}
+if [ $? == 0 ]
+then
+    ./configure --prefix=${INSTALL_DIR}/usr --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include
+    make
+    make install
+    cd ..
+    rm -r ${NTFS3G}
+    rm -r /tmp/man
+    rm -r /tmp/info
+    rm -r /tmp/include
+else 
+    echo "cannot cd to ${NTFS3G}"
+fi
 
 
 ### LIBUUID
-#tar -xzf ${LIBUUID}.tar.gz
-#cd ${LIBUUID}
-#if [ $? == 0 ]
-#then
-#    ./configure --prefix=/ --includedir=/tmp/include
-#    make
-#    make install
-#    cd ..
-#    rm -r ${LIBUUID}
-#    rm -r /tmp/include
-#else 
-#    echo "cannot cd to ${LIBUUID}"
-#fi
+tar -xzf ${LIBUUID}.tar.gz
+cd ${LIBUUID}
+if [ $? == 0 ]
+then
+    ./configure --prefix=/ --includedir=/tmp/include
+    make
+    make install
+    cd ..
+    rm -r ${LIBUUID}
+    rm -r /tmp/include
+else 
+    echo "cannot cd to ${LIBUUID}"
+fi
 
 
 ### PARTCLONE
-#tar -xzf ${PARTCLONE}.tar.gz
-#cd ${PARTCLONE}
-#if [ $? == 0 ]
-#then
-#    ./configure --enable-ntfs --enable-static --enable-ncursesw --prefix=${INSTALL_DIR}
-#    make
-#    make install
-#    cd ..
-#    rm -r ${PARTCLONE}
-#else
-#    echo "cannot cd to ${PARTCLONE}"
-#fi
+tar -xzf ${PARTCLONE}.tar.gz
+cd ${PARTCLONE}
+if [ $? == 0 ]
+then
+    ./configure --enable-ntfs --enable-static --enable-ncursesw --prefix=${INSTALL_DIR}
+    make
+    make install
+    cd ..
+    rm -r ${PARTCLONE}
+else
+    echo "cannot cd to ${PARTCLONE}"
+fi
 
 ### TERMINFO
 mkdir -p ${INSTALL_DIR}/usr/share/terminfo
