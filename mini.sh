@@ -26,13 +26,13 @@ mkdir ${INSTALL_DIR}/proc
 mkdir ${INSTALL_DIR}/tmp
 mkdir ${INSTALL_DIR}/opt
 mkdir ${INSTALL_DIR}/lib
-mkdir -p $INSTALL_DIR/var/log ##it's need for dropbear
-mkdir -p $INSTALL_DIR/lib/modules
-mkdir -p $BOOT_DIR
+mkdir -p ${INSTALL_DIR}/var/log ##it's need for dropbear
+mkdir -p ${INSTALL_DIR}/lib/modules
+mkdir -p ${BOOT_DIR}
 
 
 #
-cd $SOURCE_DIR
+cd ${SOURCE_DIR}
 
 ### kernel prepare
 tar -xjf ${KERNEL}.tar.bz2
@@ -46,44 +46,48 @@ else echo "cannot cd to ${KERNEL}"
 fi
 cp ../config-k ./${KERNEL}/.config          #copy config
 # Firmwares for Realtek
-tar -xzf ${FIRMWARE}.tar.gz
-cp -r ./firmware-nonfree/realtek/rtl_nic ./${KERNEL}/firmware/
-rm -r firmware-nonfree
+xz -c ${FIRMWARE}.tar.xz
+if [ $? == 0 ]
+then
+    tar -xf ${FIRMWARE}.tar
+    cp -r ./${FIRMWARE}/rtl_nic ./${KERNEL}/firmware/
+    rm -r ${FIRMWARE}
+fi
 # KERNELPATH for madwifi
 export KERNELPATH=`pwd`/${KERNEL}
 
 ### MADWIFI
-tar -xzf $MADWIFI.tar.gz
+#tar -xzf ${MADWIFI}.tar.gz
 # patch madwifi
-cd $MADWIFI
-if [ $? == 0 ]
-then
-    patch -Np1 -i ../${MADWIFI}-fix-install.patch
+#cd ${MADWIFI}
+#if [ $? == 0 ]
+#then
+#    patch -Np1 -i ../${MADWIFI}-fix-install.patch
     # patch kernel
-    cd patches
-    sh ./install.sh $KERNELPATH              #patching kernel
-    cd ../..
-    rm -r $MADWIFI
-else echo "cannot cd to ${MADWIFI}"
-fi
+#    cd patches
+#    sh ./install.sh ${KERNELPATH]              #patching kernel
+#    cd ../..
+#    rm -r ${MADWIFI}
+#else echo "cannot cd to ${MADWIFI}"
+#fi
 # compile tools
 
 ### WIRELESS TOOLS
-tar -xjf $WIRELESS_TOOLS.tar.bz2
-cd $WIRELESS_TOOLS
+tar -xjf ${WIRELESS_TOOLS}.tar.bz2
+cd ${WIRELESS_TOOLS}
 if [ $? == 0 ]
 then
-    mkdir -p /tmp/wireless_tools
+#    mkdir -p /tmp/wireless_tools
     make
-    make PREFIX=/tmp/wireless_tools install
+    make PREFIX=${INSTALL_DIR}
     # copy tools
-    cp /tmp/wireless_tools/sbin/iwpriv /$INSTALL_DIR/sbin/
-    cp /tmp/wireless_tools/sbin/iwconfig /$INSTALL_DIR/sbin/
-    cp /tmp/wireless_tools/lib/libiw.so.29 /$INSTALL_DIR/lib
-    ln -s libiw.so.29 /$INSTALL_DIR/lib/libiw.so
+#    cp /tmp/wireless_tools/sbin/iwpriv /${INSTALL_DIR}/sbin/
+#    cp /tmp/wireless_tools/sbin/iwconfig /$INSTALL_DIR/sbin/
+#    cp /tmp/wireless_tools/lib/libiw.so.29 /$INSTALL_DIR/lib
+#    ln -s libiw.so.29 /$INSTALL_DIR/lib/libiw.so
     cd ..
-    rm -r $WIRELESS_TOOLS
-    rm -r /tmp/wireless_tools
+    rm -r ${WIRELESS_TOOLS}
+#    rm -r /tmp/wireless_tools
 else echo "cannot cd to ${WIRELESS_TOOLS}"
 fi
 
@@ -94,12 +98,12 @@ then
     make
     cp ./arch/i386/boot/bzImage ${BOOT_DIR}/kernel
     make modules_install
-    cp -r /lib/modules/${VERSION} /$INSTALL_DIR/lib/modules/$VERSION
+    cp -r /lib/modules/${VERSION} /${INSTALL_DIR}/lib/modules/${VERSION}
     #remove some symlinks
-    rm /$INSTALL_DIR/lib/modules/$VERSION/build
-    rm /$INSTALL_DIR/lib/modules/$VERSION/source
+    rm /${INSTALL_DIR}/lib/modules/${VERSION}/build
+    rm /${INSTALL_DIR}/lib/modules/${VERSION}/source
     cd ..
-    rm -r ${KERNEL}
+    #rm -r ${KERNEL}
 else echo "cannot cd to ${KERNEL}"
 fi
 
@@ -240,22 +244,22 @@ fi
 
 
 #### SPLASHY
-tar -xjf $SPLASHY.tar.bz2
-cd $SPLASHY
+tar -xjf ${SPLASHY}.tar.bz2
+cd ${SPLASHY}
 if [ $? == 0 ]
 then
-patch -Np1 -i ../$SPLASHY.patch
-./configure --prefix=$INSTALL_DIR --infodir=/tmp/info --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-static
-make && make install
-cd ..
-rm -r $SPLASHY
-rm -r /tmp/man
-rm -r /tmp/info
-rm -r /tmp/doc
-rm -r /tmp/include
-rm $INSTALL_DIR/etc/splashy/themes
-ln -s /share/splashy/themes $INSTALL_DIR/etc/splashy/themes
-cp config.xml $INSTALL_DIR/etc/splashy/config.xml
+    patch -Np1 -i ../${SPLASHY}.patch
+    ./configure --prefix=${INSTALL_DIR} --infodir=/tmp/info --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-static
+    make && make install
+    cd ..
+    rm -r $SPLASHY
+    rm -r /tmp/man
+    rm -r /tmp/info
+    rm -r /tmp/doc
+    rm -r /tmp/include
+    rm ${INSTALL_DIR}/etc/splashy/themes
+    ln -s /share/splashy/themes ${INSTALL_DIR}/etc/splashy/themes
+    cp config.xml ${INSTALL_DIR}/etc/splashy/config.xml
 else echo "cannot cd to ${SPLASHY}"
 fi
 
@@ -264,12 +268,13 @@ tar -xjf ${DROPBEAR}.tar.bz2
 cd ${DROPBEAR}
 if [ $? == 0 ]
 then
-    ./configure --prefix=/tmp/dropbear
+    ./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man
     make
     make install
     cp /tmp/dropbear/sbin/dropbear ${INSTALL_DIR}/sbin/dropbear
     cd ..
     rm -r ${DROPBEAR}
+    rm -r /tmp/man
 else echo "cannot cd to ${DROPBEAR}"
 fi
 
@@ -293,10 +298,10 @@ fi
 
 
 ### REGED
-tar -xjf $CHNTPW.tar.bz2
-cp ./$CHNTPW/reged.static $INSTALL_DIR/bin/reged
-chmod -u+xrw $INSTALL_DIR/bin/reged
-rm -r $CHNTPW
+tar -xjf ${CHNTPW}.tar.bz2
+cp ./${CHNTPW}/reged.static ${INSTALL_DIR}/bin/reged
+chmod -u+xrw ${INSTALL_DIR}/bin/reged
+rm -r ${CHNTPW}
 
 ### GRUB
 tar -xjf ${GRUB}.tar.bz2

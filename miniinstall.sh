@@ -26,44 +26,44 @@ mkdir ${INSTALL_DIR}/proc
 mkdir ${INSTALL_DIR}/tmp
 mkdir ${INSTALL_DIR}/opt
 mkdir ${INSTALL_DIR}/lib
-mkdir -p $INSTALL_DIR/var/log ##it's need for dropbear
-mkdir -p $INSTALL_DIR/lib/modules
-mkdir -p $BOOT_DIR
+mkdir -p ${INSTALL_DIR}/var/log ##it's need for dropbear
+mkdir -p ${INSTALL_DIR}/lib/modules
+mkdir -p ${BOOT_DIR}
 
 
 #
-cd $SOURCE_DIR
+cd ${SOURCE_DIR}
 
 ### kernel prepare
 tar -xjf ${KERNEL}.tar.bz2
 cd ${KERNEL}
 if [ $? == 0 ]
 then
-make allnoconfig    #its need
-make                #because making file /include/utsrelease.h 
-cd ..
+    make allnoconfig    #its need
+    make                #because making file /include/utsrelease.h 
+    cd ..
 else echo "cannot cd to ${KERNEL}"
 fi
 cp ../config-k ./${KERNEL}/.config          #copy config
 # Firmwares for Realtek
 tar -xzf ${FIRMWARE}.tar.gz
-cp -r ./firmware-nonfree/realtek/rtl_nic ./${KERNEL}/firmware/
-rm -r firmware-nonfree
+cp -r ./${FIRMWARE}/rtl_nic ./${KERNEL}/firmware/
+rm -r ${FIRMWARE}
 # KERNELPATH for madwifi
 export KERNELPATH=`pwd`/${KERNEL}
 
 ### MADWIFI
-tar -xzf $MADWIFI.tar.gz
+tar -xzf ${MADWIFI}.tar.gz
 # patch madwifi
-cd $MADWIFI
+cd ${MADWIFI}
 if [ $? == 0 ]
 then
-patch -Np1 -i ../${MADWIFI}-fix-install.patch
-# patch kernel
-cd patches
-sh ./install.sh $KERNELPATH              #patching kernel
-cd ../..
-rm -r $MADWIFI
+    patch -Np1 -i ../${MADWIFI}-fix-install.patch
+    # patch kernel
+    cd patches
+    sh ./install.sh $KERNELPATH              #patching kernel
+    cd ../..
+    rm -r $MADWIFI
 else echo "cannot cd to ${MADWIFI}"
 fi
 # compile tools
