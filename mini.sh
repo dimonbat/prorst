@@ -44,7 +44,7 @@ then
     cd ..
 else echo "cannot cd to ${KERNEL}"
 fi
-cp ../config-k ./${KERNEL}/.config          #copy config
+cp ./configs/.config_kernel ./${KERNEL}/.config
 # Firmwares for Realtek
 xz -dkf ${FIRMWARE}.tar.xz
 if [ $? == 0 ]
@@ -53,6 +53,9 @@ then
     cp -r ./${FIRMWARE}/rtl_nic ./${KERNEL}/firmware/
     rm -r ${FIRMWARE}
     rm ${FIRMWARE}.tar
+else
+    echo "cannot extract ${FIRMWARE}.tar.xz"
+    exit 5
 fi
 
 # Firmwares for notebook lenovo 3000 G530 Broadcom WiFi
@@ -93,8 +96,49 @@ then
     cd ..
     rm -r ${WIRELESS_TOOLS}
 #    rm -r /tmp/wireless_tools
-else echo "cannot cd to ${WIRELESS_TOOLS}"
+else
+    echo "cannot cd to ${WIRELESS_TOOLS}"
+    exit 5
 fi
+
+### LibNL
+tar -xzf ${LIBNL}.tar.gz
+cd ${LIBNL}
+if [ $? == 0 ]
+then
+    ./configure --prefix=${INSTALL_DIR} --disable-static --sysconfdir=/etc
+    make
+    make install
+    cd ..
+    rm -r ${LIBNL}
+else
+    echo "cannot cd to ${LIBNL}"
+    exit 5
+fi
+
+
+### Wpa_Supplicant
+tar -xzf ${WPA_SUPPLICANT}.tar.gz
+cd ${WPA_SUPPLICANT}
+if [ $? == 0 ]
+then
+    cd wpa_supplicant
+    if [ $? == 0 ]
+    then
+	cp ../../configs/.config_wpa-supplicant ./.config
+        make
+	install -v m755 wpa_{cli,passphrase,supplicant} ${INSTALL_DIR}/sbin/
+        cd ../..
+	rm -r ${WPA_SUPPLICANT}
+    else
+	echo "cannot cd to wpa_supplicant"	
+	exit 5
+    fi	
+else
+    echo "cannot cd to ${WPA_SUPPLICANT}"
+    exit 5
+fi
+
 
 ### kernel compile
 cd ${KERNEL}
@@ -109,12 +153,14 @@ then
     rm /${INSTALL_DIR}/lib/modules/${VERSION}/source
     cd ..
     #rm -r ${KERNEL}
-else echo "cannot cd to ${KERNEL}"
+else
+    echo "cannot cd to ${KERNEL}"
+    exit 5
 fi
 
 ### BUZYBOX
 tar -xjf ${BUZYBOX}.tar.bz2
-cp ../config-b ${BUZYBOX}/.config
+cp ./configs/.config_busybox ${BUZYBOX}/.config
 cd ${BUZYBOX}
 if [ $? == 0 ]
 then
@@ -122,7 +168,9 @@ then
     cp -r ./_install/* ${INSTALL_DIR}
     cd ..
     rm -r ${BUZYBOX}
-else echo "cannot cd to ${BUSYBOX}"
+else
+    echo "cannot cd to ${BUSYBOX}"
+    exit 5
 fi
 
 ### PCIUTILS
@@ -133,7 +181,9 @@ then
     make PREFIX=${INSTALL_DIR} MANDIR=/tmp/man install
     cd ..
     rm -r ${PCIUTILS}
-else echo "cannot cd to ${PCIUTILS}"
+else
+    echo "cannot cd to ${PCIUTILS}"
+    exit 5
 fi
 
 ### DMIDECODE
@@ -150,7 +200,9 @@ then
     rm -r ${DMIDECODE}
     rm -r /tmp/man 
     rm -r /tmp/man8
-else echo "cannot cd to ${DMIDECODE}"
+else
+    echo "cannot cd to ${DMIDECODE}"
+    exit 5
 fi
 
 ### FUSE
@@ -165,38 +217,44 @@ then
     rm -r /tmp/man
     rm -r /tmp/doc
     rm -r /tmp/info
-else echo "cannot cd to ${FUSE}"
+else
+    echo "cannot cd to ${FUSE}"
+    exit 5
 fi
 
 ### NTFSPROGS
-tar -xjf $NTFSPROGS.tar.bz2
-cd $NTFSPROGS
+tar -xjf ${NTFSPROGS}.tar.bz2
+cd ${NTFSPROGS}
 if [ $? == 0 ]
 then
-./configure --prefix=${INSTALL_DIR} --enable-ntfsmount --mandir=/tmp/man --docdir=/tmp/doc --infodir=/tmp/info --localedir=/tmp/locale
-make && make install
-cd ..
-rm -r $NTFSPROGS
-rm -r /tmp/man
-rm -r /tmp/doc
-rm -r /tmp/info
-rm -r /tmp/locale
-else echo "cannot cd to ${NTFSPROGS}"
+    ./configure --prefix=${INSTALL_DIR} --enable-ntfsmount --mandir=/tmp/man --docdir=/tmp/doc --infodir=/tmp/info --localedir=/tmp/locale
+    make && make install
+    cd ..
+    rm -r ${NTFSPROGS}
+    rm -r /tmp/man
+    rm -r /tmp/doc
+    rm -r /tmp/info
+    rm -r /tmp/locale
+else
+    echo "cannot cd to ${NTFSPROGS}"
+    exit 5
 fi
 
 #### LFTP
-tar -xjf $LFTP.tar.bz2
-cd $LFTP
+tar -xjf ${LFTP}.tar.bz2
+cd ${LFTP}
 if [ $? == 0 ]
 then
-./configure --prefix=$INSTALL_DIR --infodir=/tmp/info --mandir=/tmp/man --docdir=/tmp/doc
-make && make install
-cd ..
-rm -r $LFTP
-rm -r /tmp/info
-rm -r /tmp/man
-rm -r /tmp/doc
-else echo "cannot cd to ${LFTP}"
+    ./configure --prefix=$INSTALL_DIR --infodir=/tmp/info --mandir=/tmp/man --docdir=/tmp/doc
+    make && make install
+    cd ..
+    rm -r ${LFTP}
+    rm -r /tmp/info
+    rm -r /tmp/man
+    rm -r /tmp/doc
+else
+    echo "cannot cd to ${LFTP}"
+    exit 5
 fi
 
 ### LIBPNG
@@ -204,15 +262,17 @@ tar -xjf $LIBPNG.tar.bz2
 cd ${LIBPNG}
 if [ $? == 0 ]
 then
-./configure --prefix=$INSTALL_DIR/usr/local --infodir=/tmp/info --includedir=/tmp/include --mandir=/tmp/man --docdir=/tmp/doc --enable-static
-make && make install
-cd ..
-rm -r $LIBPNG
-rm -r /tmp/man
-rm -r /tmp/doc
-rm -r /tmp/include
-rm -r /tmp/info
-else echo "cannot cd to ${LIBPNG}"
+    ./configure --prefix=$INSTALL_DIR/usr/local --infodir=/tmp/info --includedir=/tmp/include --mandir=/tmp/man --docdir=/tmp/doc --enable-static
+    make && make install
+    cd ..
+    rm -r ${LIBPNG}
+    rm -r /tmp/man
+    rm -r /tmp/doc
+    rm -r /tmp/include
+    rm -r /tmp/info
+else
+    echo "cannot cd to ${LIBPNG}"
+    exit 5
 fi
 
 ### GLIB2
@@ -220,14 +280,16 @@ tar -xjf ${GLIB2}.tar.bz2
 cd ${GLIB2}
 if [ $? == 0 ]
 then
-./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-gtk-doc=no --localedir=/tmp
-make && make install
-cd ..
-rm -r $GLIB2
-rm -r /tmp/man
-rm -r /tmp/doc
-rm -r /tmp/include
-else echo "cannot cd to ${GLIB2}"
+    ./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-gtk-doc=no --localedir=/tmp
+    make && make install
+    cd ..
+    rm -r ${GLIB2}
+    rm -r /tmp/man
+    rm -r /tmp/doc
+    rm -r /tmp/include
+else
+    echo "cannot cd to ${GLIB2}"
+    exit 5
 fi
 
 
@@ -236,15 +298,17 @@ tar -xjf ${DIRECTFB}.tar.bz2
 cd ./${DIRECTFB}
 if [ $? == 0 ]
 then
-./configure  --prefix=/usr/local --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --disable-x11 --enable-video4linux --enable-static
-make
-make exec_prefix=${INSTALL_DIR}/usr/local install
-cd ..
-rm -r ${DIRECTFB}
-rm -r /tmp/man
-rm -r /tmp/doc
-rm -r /tmp/include
-else echo "cannot cd to ${DIRECTFB}"
+    ./configure  --prefix=/usr/local --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --disable-x11 --enable-video4linux --enable-static
+    make
+    make exec_prefix=${INSTALL_DIR}/usr/local install
+    cd ..
+    rm -r ${DIRECTFB}
+    rm -r /tmp/man
+    rm -r /tmp/doc
+    rm -r /tmp/include
+else
+    echo "cannot cd to ${DIRECTFB}"
+    exit 5
 fi
 
 
@@ -257,7 +321,7 @@ then
     ./configure --prefix=${INSTALL_DIR} --infodir=/tmp/info --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-static
     make && make install
     cd ..
-    rm -r $SPLASHY
+    rm -r ${SPLASHY}
     rm -r /tmp/man
     rm -r /tmp/info
     rm -r /tmp/doc
@@ -265,7 +329,9 @@ then
     rm ${INSTALL_DIR}/etc/splashy/themes
     ln -s /share/splashy/themes ${INSTALL_DIR}/etc/splashy/themes
     cp config.xml ${INSTALL_DIR}/etc/splashy/config.xml
-else echo "cannot cd to ${SPLASHY}"
+else
+    echo "cannot cd to ${SPLASHY}"
+    exit 5
 fi
 
 ###DROPBEAR
@@ -280,7 +346,9 @@ then
     cd ..
     rm -r ${DROPBEAR}
     rm -r /tmp/man
-else echo "cannot cd to ${DROPBEAR}"
+else
+    echo "cannot cd to ${DROPBEAR}"
+    exit 5
 fi
 
 ###SCREEN
@@ -299,6 +367,7 @@ then
     rm -r ${SCREEN}
 else
     echo "cannot cd to ${SCREEN}"
+    exit 5
 fi
 
 
@@ -323,6 +392,7 @@ then
     rm -r /tmp/info
 else 
     echo "cannot cd to ${GRUB}"
+    exit 5
 fi
 
 
@@ -341,6 +411,7 @@ then
     rm -r /tmp/include
 else 
     echo "cannot cd to ${NTFS3G}"
+    exit 5
 fi
 
 
@@ -357,6 +428,7 @@ then
     rm -r /tmp/include
 else 
     echo "cannot cd to ${LIBUUID}"
+    exit 5
 fi
 
 
@@ -372,6 +444,7 @@ then
     rm -r ${PARTCLONE}
 else
     echo "cannot cd to ${PARTCLONE}"
+    exit 5
 fi
 
 ### TERMINFO
@@ -428,9 +501,9 @@ EOF
 
 
 #CHROOT
-cp chr.sh $INSTALL_DIR
-chroot $INSTALL_DIR /bin/sh /chr.sh
-rm $INSTALL_DIR/chr.sh
+cp chr.sh ${INSTALL_DIR}
+chroot ${INSTALL_DIR} /bin/ash /chr.sh
+rm ${INSTALL_DIR}/chr.sh
 
 
 

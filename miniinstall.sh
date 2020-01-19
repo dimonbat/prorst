@@ -44,7 +44,7 @@ then
     cd ..
 else echo "cannot cd to ${KERNEL}"
 fi
-cp ../config-k ./${KERNEL}/.config          #copy config
+cp ./configs/.config_kernel ./${KERNEL}/.config
 # Firmwares for Realtek
 xz -dkf ${FIRMWARE}.tar.xz
 if [ $? == 0 ]
@@ -96,6 +96,46 @@ rm -r /tmp/wireless_tools
 else echo "cannot cd to ${WIRELESS_TOOLS}"
 fi
 
+### LibNL
+tar -xzf ${LIBNL}.tar.gz
+cd ${LIBNL}
+if [ $? == 0 ]
+then
+    ./configure --prefix=${INSTALL_DIR} --disable-static --sysconfdir=/etc
+    make
+    make install
+    cd ..
+    rm -r ${LIBNL}
+else
+    echo "cannot cd to ${LIBNL}"
+    exit 5
+fi
+
+
+### Wpa_Supplicant
+tar -xzf ${WPA_SUPPLICANT}.tar.gz
+cd ${WPA_SUPPLICANT}
+if [ $? == 0 ]
+then
+    cd wpa_supplicant
+    if [ $? == 0 ]
+    then
+	cp ../../configs/.config_wpa-supplicant ./.config
+        make
+	install -v m755 wpa_{cli,passphrase,supplicant} ${INSTALL_DIR}/sbin/
+        cd ../..
+	rm -r ${WPA_SUPPLICANT}
+    else
+	echo "cannot cd to wpa_supplicant"	
+	exit 5
+    fi	
+else
+    echo "cannot cd to ${WPA_SUPPLICANT}"
+    exit 5
+fi
+
+
+
 ### kernel compile
 cd $KERNEL
 if [ $? == 0 ]
@@ -112,26 +152,26 @@ else echo "cannot cd to ${KERNEL}"
 fi
 
 ### BUZYBOX
-tar -xjf $BUZYBOX.tar.bz2
-cp ../config-b $BUZYBOX/.config
-cd $BUZYBOX
+tar -xjf ${BUZYBOX}.tar.bz2
+cp ./configs/.config_busybox ${BUZYBOX}/.config
+cd ${BUZYBOX}
 if [ $? == 0 ]
 then
 make && make install
-cp -r ./_install/* $INSTALL_DIR
+cp -r ./_install/* ${INSTALL_DIR}
 cd ..
-rm -r $BUZYBOX
+rm -r ${BUZYBOX}
 else echo "cannot cd to ${BUSYBOX}"
 fi
 
 ### PCIUTILS
-tar -xjf $PCIUTILS.tar.bz2
-cd $PCIUTILS
+tar -xjf ${PCIUTILS}.tar.bz2
+cd ${PCIUTILS}
 if [ $? == 0 ]
 then
-make PREFIX=$INSTALL_DIR MANDIR=/tmp/man install
+make PREFIX=${INSTALL_DIR} MANDIR=/tmp/man install
 cd ..
-rm -r $PCIUTILS
+rm -r ${PCIUTILS}
 else echo "cannot cd to ${PCIUTILS}"
 fi
 
