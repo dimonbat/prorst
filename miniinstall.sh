@@ -46,26 +46,35 @@ else echo "cannot cd to ${KERNEL}"
 fi
 cp ../config-k ./${KERNEL}/.config          #copy config
 # Firmwares for Realtek
-tar -xzf ${FIRMWARE}.tar.gz
-cp -r ./${FIRMWARE}/rtl_nic ./${KERNEL}/firmware/
-rm -r ${FIRMWARE}
+xz -dkf ${FIRMWARE}.tar.xz
+if [ $? == 0 ]
+then
+    tar -xf ${FIRMWARE}.tar
+    cp -r ./${FIRMWARE}/rtl_nic ./${KERNEL}/firmware/
+    rm -r ${FIRMWARE}
+    rm ${FIRMWARE}.tar
+fi
+
 # KERNELPATH for madwifi
 export KERNELPATH=`pwd`/${KERNEL}
 
+# Firmwares for notebook lenovo 3000 G530 Broadcom WiFi
+cp -r ./firmware/b43 ./${KERNEL}/firmware
+
 ### MADWIFI
-tar -xzf ${MADWIFI}.tar.gz
+#tar -xzf ${MADWIFI}.tar.gz
 # patch madwifi
-cd ${MADWIFI}
-if [ $? == 0 ]
-then
-    patch -Np1 -i ../${MADWIFI}-fix-install.patch
+#cd ${MADWIFI}
+#if [ $? == 0 ]
+#then
+#    patch -Np1 -i ../${MADWIFI}-fix-install.patch
     # patch kernel
-    cd patches
-    sh ./install.sh $KERNELPATH              #patching kernel
-    cd ../..
-    rm -r $MADWIFI
-else echo "cannot cd to ${MADWIFI}"
-fi
+#    cd patches
+#    sh ./install.sh $KERNELPATH              #patching kernel
+#    cd ../..
+#    rm -r $MADWIFI
+#else echo "cannot cd to ${MADWIFI}"
+#fi
 # compile tools
 
 ### WIRELESS TOOLS

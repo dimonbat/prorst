@@ -46,13 +46,18 @@ else echo "cannot cd to ${KERNEL}"
 fi
 cp ../config-k ./${KERNEL}/.config          #copy config
 # Firmwares for Realtek
-xz -c ${FIRMWARE}.tar.xz
+xz -dkf ${FIRMWARE}.tar.xz
 if [ $? == 0 ]
 then
     tar -xf ${FIRMWARE}.tar
     cp -r ./${FIRMWARE}/rtl_nic ./${KERNEL}/firmware/
     rm -r ${FIRMWARE}
+    rm ${FIRMWARE}.tar
 fi
+
+# Firmwares for notebook lenovo 3000 G530 Broadcom WiFi
+cp -r ./firmware/b43 ./${KERNEL}/firmware
+
 # KERNELPATH for madwifi
 export KERNELPATH=`pwd`/${KERNEL}
 
@@ -79,7 +84,7 @@ if [ $? == 0 ]
 then
 #    mkdir -p /tmp/wireless_tools
     make
-    make PREFIX=${INSTALL_DIR}
+    make PREFIX=${INSTALL_DIR} install
     # copy tools
 #    cp /tmp/wireless_tools/sbin/iwpriv /${INSTALL_DIR}/sbin/
 #    cp /tmp/wireless_tools/sbin/iwconfig /$INSTALL_DIR/sbin/
@@ -140,9 +145,9 @@ then
     patch -Np1 -i ../${DMIDECODE}-length.patch
     patch -Np1 -i ../${DMIDECODE}-makefile-fix.patch
     #make
-    make prefix=$INSTALL_DIR mandir=/tmp/man man8dir=/tmp/man8 install
+    make prefix=${INSTALL_DIR} mandir=/tmp/man man8dir=/tmp/man8 install
     cd ..
-    rm -r $DMIDECODE
+    rm -r ${DMIDECODE}
     rm -r /tmp/man 
     rm -r /tmp/man8
 else echo "cannot cd to ${DMIDECODE}"
@@ -168,7 +173,7 @@ tar -xjf $NTFSPROGS.tar.bz2
 cd $NTFSPROGS
 if [ $? == 0 ]
 then
-./configure --prefix=$INSTALL_DIR --enable-ntfsmount --mandir=/tmp/man --docdir=/tmp/doc --infodir=/tmp/info --localedir=/tmp/locale
+./configure --prefix=${INSTALL_DIR} --enable-ntfsmount --mandir=/tmp/man --docdir=/tmp/doc --infodir=/tmp/info --localedir=/tmp/locale
 make && make install
 cd ..
 rm -r $NTFSPROGS
@@ -211,11 +216,11 @@ else echo "cannot cd to ${LIBPNG}"
 fi
 
 ### GLIB2
-tar -xjf $GLIB2.tar.bz2
-cd $GLIB2
+tar -xjf ${GLIB2}.tar.bz2
+cd ${GLIB2}
 if [ $? == 0 ]
 then
-./configure --prefix=$INSTALL_DIR --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-gtk-doc=no --localedir=/tmp
+./configure --prefix=${INSTALL_DIR} --mandir=/tmp/man --docdir=/tmp/doc --includedir=/tmp/include --enable-gtk-doc=no --localedir=/tmp
 make && make install
 cd ..
 rm -r $GLIB2
